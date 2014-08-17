@@ -18,12 +18,11 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 
 
-import urllib, urllib2, cookielib, re, xbmcaddon, string, xbmc, xbmcgui, xbmcplugin, os, httplib, socket
+import urllib, urllib2, cookielib, re, xbmcaddon, string, xbmc, xbmcgui, xbmcplugin, xbmcvfs, os, httplib, socket
 import base64
 import random
 import sha
 #import hashlib
-
 
 __settings__ = xbmcaddon.Addon(id='plugin.video.turbofilm.tv')
 __language__ = __settings__.getLocalizedString
@@ -31,7 +30,7 @@ USERNAME = __settings__.getSetting('username')
 USERPASS = __settings__.getSetting('password')
 handle = int(sys.argv[1])
 
-PLUGIN_NAME = 'Turbofilm.TV'
+PLUGIN_NAME   = 'Turbofilm.TV'
 SITE_HOSTNAME = 'turbik.tv'
 SITEPREF      = 'https://%s' % SITE_HOSTNAME
 SITE_URL      = SITEPREF + '/'
@@ -39,7 +38,6 @@ SITE_URL      = SITEPREF + '/'
 phpsessid_file = os.path.join(xbmc.translatePath('special://temp/'), 'plugin_video_turbofilmtv.sess')
 plotdescr_file = os.path.join(xbmc.translatePath('special://temp/'), 'plugin_video_turbofilmtv.plot')
 thumb = os.path.join( os.getcwd(), "icon.png" )
-
 
 def run_once():
 	global USERNAME, USERPASS
@@ -570,10 +568,24 @@ def Watch(url, title, img):
 				} )
 			item.setProperty("IsPlayable", "true")
 			item.setProperty('mimetype', 'video/mp4');
+			#item.addStreamInfo('subtitle', { 'language': 'en' })
 
 			xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
 
-			xbmc.Player().play(finalUrl, item)
+			subtitle_list = []
+			testfile = urllib.URLopener()
+			testfile.retrieve('https:' + subtitles_en_sources, os.path.join(xbmc.translatePath('special://temp/'), 'subtitles_en.srt').decode("utf-8"))
+			subtitle_list.append(os.path.join(xbmc.translatePath('special://temp/'), 'subtitles_en.srt'))
+			for sub in subtitle_list:
+				listitem = xbmcgui.ListItem(label=sub)
+				xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=sub,listitem=listitem,isFolder=False)
+
+			xbmc.log("Download en subs Using HTTP")
+
+			player = xbmc.Player()
+			#player.setSubtitles('https:' + subtitles_en_sources)
+			player.play(finalUrl, item)
+			#xbmc.log('https:' + subtitles_en_sources)
 			#xbmc.Player().play(finalItem)
 
 			return
