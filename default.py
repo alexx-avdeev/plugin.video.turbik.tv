@@ -24,7 +24,7 @@ import random
 import sha
 #import hashlib
 
-__settings__ = xbmcaddon.Addon(id='plugin.video.turbofilm.tv')
+__settings__ = xbmcaddon.Addon(id='plugin.video.turbik.tv')
 __language__ = __settings__.getLocalizedString
 USERNAME = __settings__.getSetting('username')
 USERPASS = __settings__.getSetting('password')
@@ -35,8 +35,8 @@ SITE_HOSTNAME = 'turbik.tv'
 SITEPREF      = 'https://%s' % SITE_HOSTNAME
 SITE_URL      = SITEPREF + '/'
 
-phpsessid_file = os.path.join(xbmc.translatePath('special://temp/'), 'plugin_video_turbofilmtv.sess')
-plotdescr_file = os.path.join(xbmc.translatePath('special://temp/'), 'plugin_video_turbofilmtv.plot')
+phpsessid_file = os.path.join(xbmc.translatePath('special://temp/'), 'plugin_video_turbiktv.sess')
+plotdescr_file = os.path.join(xbmc.translatePath('special://temp/'), 'plugin_video_turbiktv.plot')
 thumb = os.path.join( os.getcwd(), "icon.png" )
 
 def run_once():
