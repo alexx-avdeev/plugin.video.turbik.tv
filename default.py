@@ -35,6 +35,18 @@ SITE_HOSTNAME = 'turbik.tv'
 SITEPREF      = 'https://%s' % SITE_HOSTNAME
 SITE_URL      = SITEPREF + '/'
 
+THUMBNAIL_VIEW_IDS = {'skin.confluence': 500,
+                      'skin.aeon.nox': 551,
+                      'skin.confluence-vertical': 500,
+                      'skin.jx720': 52,
+                      'skin.pm3-hd': 53,
+                      'skin.rapier': 50,
+                      'skin.simplicity': 500,
+                      'skin.slik': 53,
+                      'skin.touched': 500,
+                      'skin.transparency': 53,
+                      'skin.xeebo': 55}
+
 phpsessid_file = os.path.join(xbmc.translatePath('special://temp/'), 'plugin_video_turbiktv.sess')
 plotdescr_file = os.path.join(xbmc.translatePath('special://temp/'), 'plugin_video_turbiktv.plot')
 thumb = os.path.join( os.getcwd(), "icon.png" )
@@ -154,7 +166,7 @@ def ShowSeries(url):
 		if len(raw_img) == 0:
 			Thumb = thumb
 		else:
-			Thumb = SITEPREF + raw_img[0]
+			Thumb = 'https:%s' % raw_img[0]
 		raw_en = re.compile('<span class="serieslistboxen">(.*?)</span>').findall(http2)
 		if len(raw_en) == 0:
 			TitleEN = 'No title'
@@ -174,11 +186,11 @@ def ShowSeries(url):
 		if len(raw_des2) > 0:
 			Descr = Descr + raw_des2[0]
 		sindex = str(x)
-		#xbmc.log('*** %s Thumb   = %s' % (sindex, Thumb))
-		#xbmc.log('*** %s TitleEN = %s' % (sindex, TitleEN))
-		#xbmc.log('*** %s TitleRU = %s' % (sindex, TitleRU))
-		#xbmc.log('*** %s Descr   = %s' % (sindex, Descr))
-		#xbmc.log('*** %s wurl   = %s' %  (sindex, wurl))
+		xbmc.log('*** %s Thumb   = %s' % (sindex, Thumb))
+		xbmc.log('*** %s TitleEN = %s' % (sindex, TitleEN))
+		xbmc.log('*** %s TitleRU = %s' % (sindex, TitleRU))
+		xbmc.log('*** %s Descr   = %s' % (sindex, Descr))
+		xbmc.log('*** %s wurl   = %s' %  (sindex, wurl))
 
 		Title = '%s. %s (%s)' % (sindex, TitleRU, TitleEN)
 
@@ -196,6 +208,8 @@ def ShowSeries(url):
 		xbmcplugin.addDirectoryItem(handle, url, listitem, True)
 
 		x += 1
+	cmd = 'Container.SetViewMode(%s)' % THUMBNAIL_VIEW_IDS.get(xbmc.getSkinDir())
+	xbmc.executebuiltin(cmd)
 
 def OpenSeries(url, title):
 	http = Get(url, SITEPREF + '/Series/')
